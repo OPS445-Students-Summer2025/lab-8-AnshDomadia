@@ -1,0 +1,50 @@
+---
+- name: Configure OPS445 VM
+  hosts: vmlab
+  become: yes
+  vars:
+    seneca_id: anshdomadia
+  tasks:
+    - name: Install EPEL
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Remove tree
+      yum:
+        name: tree
+        state: absent
+
+    - name: Set hostname
+      hostname:
+        name: "{{ seneca_id }}"
+
+    - name: Create new user
+      user:
+        name: "{{ seneca_id }}"
+        groups: wheel
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Allow passwordless sudo for wheel group
+      copy:
+        dest: /etc/sudoers.d/wheel_nopasswd
+        content: "%wheel ALL=(ALL) NOPASSWD: ALL\n"
+        mode: '0440'
+
+    - name: Copy SSH public key to new user
+      authorized_key:
+        user: "{{ seneca_id }}"
+        state: present
+        key: "{{ lookup('file', '/home/student/.ssh/authorized_keys') }}"
+
+    - name: Create lab directories
+      file:
+        path: "/home/{{ seneca_id }}/ops445/lab{{ item }}"
+        state: directory
+        owner: "{{ seneca_id }}"
+        group: "{{ seneca_id }}"
+        mode: '0755'
+      loop: "{{ range(1,9)|list }}"
+
