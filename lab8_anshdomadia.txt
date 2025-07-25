@@ -1,0 +1,27 @@
+
+PLAY [Configure OPS445 VM] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [vmlab]
+
+TASK [Install EPEL] ************************************************************
+ok: [vmlab]
+
+TASK [Remove tree] *************************************************************
+ok: [vmlab]
+
+TASK [Set hostname] ************************************************************
+changed: [vmlab]
+
+TASK [Create new user] *********************************************************
+changed: [vmlab]
+
+TASK [Allow passwordless sudo for wheel group] *********************************
+changed: [vmlab]
+
+TASK [Copy SSH public key to new user] *****************************************
+fatal: [vmlab]: FAILED! => {"msg": "An unhandled exception occurred while running the lookup plugin 'file'. Error was a <class 'ansible.errors.AnsibleError'>, original message: could not locate file in lookup: /home/student/.ssh/authorized_keys. could not locate file in lookup: /home/student/.ssh/authorized_keys"}
+
+PLAY RECAP *********************************************************************
+vmlab                      : ok=6    changed=3    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
