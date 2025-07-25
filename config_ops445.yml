@@ -3,7 +3,7 @@
   hosts: vmlab
   become: yes
   vars:
-    seneca_id: anshdomadia
+    seneca_id: Addomadia
   tasks:
     - name: Install EPEL
       yum:
@@ -17,11 +17,11 @@
 
     - name: Set hostname
       hostname:
-        name: "{{ seneca_id }}"
+        name: "Addomadia"
 
     - name: Create new user
       user:
-        name: "{{ seneca_id }}"
+        name: "Addomadia"
         groups: wheel
         append: yes
         shell: /bin/bash
@@ -35,16 +35,16 @@
 
     - name: Copy SSH public key to new user
       authorized_key:
-        user: "{{ seneca_id }}"
+        user: "Addomadia"
         state: present
         key: "{{ lookup('file', '/home/student/.ssh/authorized_keys') }}"
 
     - name: Create lab directories
       file:
-        path: "/home/{{ seneca_id }}/ops445/lab{{ item }}"
+        path: "/home/Addomadia/ops445/lab{{ item }}"
         state: directory
-        owner: "{{ seneca_id }}"
-        group: "{{ seneca_id }}"
+        owner: "Addomadia"
+        group: "Addomadia"
         mode: '0755'
       loop: "{{ range(1,9)|list }}"
 
