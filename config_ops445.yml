@@ -1,0 +1,50 @@
+---
+- name: Configure OPS445 VM
+  hosts: vmlab
+  become: yes
+  vars:
+    seneca_id: Addomadia
+  tasks:
+    - name: Install EPEL
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Remove tree
+      yum:
+        name: tree
+        state: absent
+
+    - name: Set hostname
+      hostname:
+        name: "Addomadia"
+
+    - name: Create new user
+      user:
+        name: "Addomadia"
+        groups: wheel
+        append: yes
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Allow passwordless sudo for wheel group
+      copy:
+        dest: /etc/sudoers.d/wheel_nopasswd
+        content: "%wheel ALL=(ALL) NOPASSWD: ALL\n"
+        mode: '0440'
+
+    - name: Copy SSH public key to new user
+      authorized_key:
+        user: "Addomadia"
+        state: present
+        key: "{{ lookup('file', '/home/student/.ssh/authorized_keys') }}"
+
+    - name: Create lab directories
+      file:
+        path: "/home/Addomadia/ops445/lab{{ item }}"
+        state: directory
+        owner: "Addomadia"
+        group: "Addomadia"
+        mode: '0755'
+      loop: "{{ range(1,9)|list }}"
+
